@@ -70,17 +70,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void resetLastLocation(Location loc) {
-        this.lastLocation = null;
-        if (loc != null) {
-            this.lastLocation = new Location("Point A");
-            this.lastLocation.setAltitude(loc.getAltitude());
-            this.lastLocation.setLatitude(loc.getLatitude());
-            this.lastLocation.setLongitude(loc.getLongitude());
-        }
-        return;
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         data = (TextView)findViewById(R.id.data);
-        dataStr.append("Link Speed");
+        dataStr.append("Link Speed,Longitude,Latitude,Altitude,Street,City,State And Zip,Country");
 
         @SuppressLint("WifiManagerLeak")
         final WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -134,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                         + "Altitude: " + altitude + "\n"
                         + "Location Name: " + locationName +"\n"
                         + "WIFI SPEED: " + info);
-                dataStr.append("\n" + String.valueOf(info));
+                dataStr.append("\n" + String.valueOf(info) + ',' + String.valueOf(longitude) + "," + String.valueOf(latitude) + "," + String.valueOf(altitude) + "," + String.valueOf(locationName));
 
             }
 
