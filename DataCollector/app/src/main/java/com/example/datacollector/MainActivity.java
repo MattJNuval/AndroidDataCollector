@@ -106,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLocationChanged(Location location) {
 
-                int info = wifi.getConnectionInfo().getLinkSpeed();
+                int linkInfo = wifi.getConnectionInfo().getLinkSpeed();
+                int fSpeedInfo = wifi.
 
                 final double latitude = location.getLatitude();
                 final double longitude = location.getLongitude();
@@ -122,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
                         + "Latitude: " + latitude + "\n"
                         + "Altitude: " + altitude + "\n"
                         + "Location Name: " + locationName +"\n"
-                        + "WIFI SPEED: " + info);
-                dataStr.append("\n" + String.valueOf(info) + ',' + String.valueOf(longitude) + "," + String.valueOf(latitude) + "," + String.valueOf(altitude) + "," + String.valueOf(locationName));
+                        + "LINK SPEED: " + linkInfo);
+                dataStr.append("\n" + String.valueOf(linkInfo) + ',' + String.valueOf(longitude) + "," + String.valueOf(latitude) + "," + String.valueOf(altitude) + "," + String.valueOf(locationName));
 
             }
 
