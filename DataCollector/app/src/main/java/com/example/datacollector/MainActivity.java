@@ -2,6 +2,7 @@ package com.example.datacollector;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.hardware.Sensor;
@@ -12,38 +13,42 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private Location currentLocation;
     private Geocoder geocoder;
-    private Location lastLocation;
-    private List<Float> lightValues;
-    private Sensor lightSensor;
-    private SensorEventListener lightSensorListener;
+    private Location lastLocation;;
     private LocationListener locationListener;
     private LocationManager locationManager;
     private Resources res;
     private SensorManager sensorManager;
+    private TextView data;
 
     private final String[] PERMISSIONS = {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
             android.Manifest.permission.ACCESS_FINE_LOCATION,
     };
 
+    private StringBuilder dataStr = new StringBuilder();
 
-    @SuppressLint("WifiManagerLeak")
-    WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
     private String computeLocationName(Location loc) {
         try {
@@ -82,6 +87,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        data = (TextView)findViewById(R.id.data);
+        dataStr.append("Link Speed");
+
+        @SuppressLint("WifiManagerLeak")
+        final WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        this.currentLocation = new Location("Point B");
+        this.geocoder = new Geocoder(this, Locale.getDefault());
+        this.locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        this.res = getResources();
+        this.sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+
         if (ContextCompat.checkSelfPermission(this, this.PERMISSIONS[0])
                 != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, this.PERMISSIONS[1])
@@ -113,27 +129,28 @@ public class MainActivity extends AppCompatActivity {
 
                 final String locationName = computeLocationName(currentLocation);
 
-                System.out.println("CURRENT VALUES \n"+ "Longitude: " + longitude + "\n"
+                data.setText("CURRENT VALUES \n"+ "Longitude: " + longitude + "\n"
                         + "Latitude: " + latitude + "\n"
                         + "Altitude: " + altitude + "\n"
                         + "Location Name: " + locationName +"\n"
                         + "WIFI SPEED: " + info);
+                dataStr.append("\n" + String.valueOf(info));
 
             }
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
-
+                return;
             }
 
             @Override
             public void onProviderEnabled(String provider) {
-
+                return;
             }
 
             @Override
             public void onProviderDisabled(String provider) {
-
+                return;
             }
         };
 
@@ -141,6 +158,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void export(View view) {
+        try {
+            FileOutputStream out = openFileOutput("data.csv", Context.MODE_PRIVATE);
+            out.write((dataStr.toString()).getBytes());
+            out.close();
+
+            Context context = getApplicationContext();
+            File fileLocation = new File(getFilesDir(), "data.csv");
+            Uri path = FileProvider.getUriForFile(context,"com.example.datacollector.fileprovider", fileLocation);
+            Intent fileIntent = new Intent(Intent.ACTION_SEND);
+            fileIntent.setType("text/csv");
+            fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Data");
+            fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            fileIntent.putExtra(Intent.EXTRA_STREAM, path);
+            startActivity(Intent.createChooser(fileIntent,"Sent Mail"));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
     protected void onResume() {
@@ -154,9 +192,6 @@ public class MainActivity extends AppCompatActivity {
             this.locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                     500, 1, this.locationListener);
         }
-        if (this.lightSensor != null) {
-            this.sensorManager.registerListener(this.lightSensorListener, this.lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
         return;
     }
 
@@ -169,11 +204,10 @@ public class MainActivity extends AppCompatActivity {
                 == PackageManager.PERMISSION_GRANTED) {
             this.locationManager.removeUpdates(locationListener);
         }
-        if (this.lightSensorListener != null) {
-            this.sensorManager.unregisterListener(this.lightSensorListener);
-        }
         return;
     }
 }
+
+
 
 
