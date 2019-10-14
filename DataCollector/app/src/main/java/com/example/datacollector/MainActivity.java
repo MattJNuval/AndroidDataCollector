@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         data = (TextView)findViewById(R.id.data);
-        dataStr.append("Link Speed,Longitude,Latitude,Altitude,Street,City,State And Zip,Country");
+        dataStr.append("Link Speed,Ip Address,Longitude,Latitude,Altitude,Street,City,State And Zip,Country");
 
         @SuppressLint("WifiManagerLeak")
         final WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
 
                 int linkInfo = wifi.getConnectionInfo().getLinkSpeed();
-                int fSpeedInfo = wifi.
+                int ipInfo = wifi.getConnectionInfo().getIpAddress();
 
                 final double latitude = location.getLatitude();
                 final double longitude = location.getLongitude();
@@ -123,8 +123,9 @@ public class MainActivity extends AppCompatActivity {
                         + "Latitude: " + latitude + "\n"
                         + "Altitude: " + altitude + "\n"
                         + "Location Name: " + locationName +"\n"
-                        + "LINK SPEED: " + linkInfo);
-                dataStr.append("\n" + String.valueOf(linkInfo) + ',' + String.valueOf(longitude) + "," + String.valueOf(latitude) + "," + String.valueOf(altitude) + "," + String.valueOf(locationName));
+                        + "Ip Address: " + ipInfo + "\n"
+                        + "Link Speed: " + linkInfo);
+                dataStr.append("\n" + String.valueOf(linkInfo)+ ","+ String.valueOf(ipInfo)+ "," + String.valueOf(longitude) + "," + String.valueOf(latitude) + "," + String.valueOf(altitude) + "," + String.valueOf(locationName));
 
             }
 
