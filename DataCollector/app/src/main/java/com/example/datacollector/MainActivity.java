@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private Resources res;
     private SensorManager sensorManager;
     private TextView data;
+    private TextView content;
+
+    private String sumContent = "";
+    private int counter = 0;
 
     private final String[] PERMISSIONS = {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         data = (TextView)findViewById(R.id.data);
+        content = (TextView)findViewById(R.id.content);
         dataStr.append("Link Speed,Ip Address,Longitude,Latitude,Altitude,Street,City,State And Zip,Country");
 
         @SuppressLint("WifiManagerLeak")
@@ -125,6 +130,16 @@ public class MainActivity extends AppCompatActivity {
                         + "Location Name: " + locationName +"\n"
                         + "Ip Address: " + ipInfo + "\n"
                         + "Link Speed: " + linkInfo);
+
+                sumContent += "#"+ String.valueOf(counter++) + "\n"
+                        + "Longitude: " + longitude + "\n"
+                        + "Latitude: " + latitude + "\n"
+                        + "Altitude: " + altitude + "\n"
+                        + "Location Name: " + locationName +"\n"
+                        + "Ip Address: " + ipInfo + "\n"
+                        + "Link Speed: " + linkInfo + "\n\n";
+                content.setText(sumContent);
+
                 dataStr.append("\n" + String.valueOf(linkInfo)+ ","+ String.valueOf(ipInfo)+ "," + String.valueOf(longitude) + "," + String.valueOf(latitude) + "," + String.valueOf(altitude) + "," + String.valueOf(locationName));
 
             }
