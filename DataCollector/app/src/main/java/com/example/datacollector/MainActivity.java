@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                         + "Altitude: " + altitude + "\n"
                         + "Location Name: " + locationName +"\n"
                         + "Ip Address: " + ipInfo + "\n"
-                        + "Link Speed: " + linkInfo);
+                        + "Link Speed: " + linkInfo + " Mb/s");
 
                 sumContent += "#"+ String.valueOf(counter++) + "\n"
                         + "Longitude: " + longitude + "\n"
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                         + "Altitude: " + altitude + "\n"
                         + "Location Name: " + locationName +"\n"
                         + "Ip Address: " + ipInfo + "\n"
-                        + "Link Speed: " + linkInfo + "\n\n";
+                        + "Link Speed: " + linkInfo + " Mb/s\n\n";
                 content.setText(sumContent);
 
                 dataStr.append("\n" + String.valueOf(linkInfo)+ ","+ String.valueOf(ipInfo)+ "," + String.valueOf(longitude) + "," + String.valueOf(latitude) + "," + String.valueOf(altitude) + "," + String.valueOf(locationName));
